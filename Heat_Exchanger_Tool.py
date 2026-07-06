@@ -37,18 +37,20 @@ def capacity_rate(m, Cp):
 
 
 
-#Taking user inputs for hot and cold fluid properties
-Th_in = float(input("Enter the hot fluid inlet temperature (°C): "))
-Th_out = float(input("Enter the hot fluid outlet temperature (°C): "))
-Tc_in = float(input("Enter the cold fluid inlet temperature (°C): "))
-Tc_out = float(input("Enter the cold fluid outlet temperature (°C): "))
+####Taking user inputs for hot and cold fluid properties
+Th_in = float(input("Enter the hot fluid inlet temperature (K): "))
+Th_out = float(input("Enter the hot fluid outlet temperature (K): "))
+Tc_in = float(input("Enter the cold fluid inlet temperature (K): "))
+Tc_out = float(input("Enter the cold fluid outlet temperature (K): "))
 
-Cp_h = float(input("Enter the specific heat capacity of the hot fluid (kJ/kg°C): "))
-Cp_c = float(input("Enter the specific heat capacity of the cold fluid (kJ/kg°C): "))
+Cp_h = float(input("Enter the specific heat capacity of the hot fluid (kJ/kgK): "))
+Cp_c = float(input("Enter the specific heat capacity of the cold fluid (kJ/kgK): "))
 m_h = float(input("Enter the mass flow rate of the hot fluid (kg/s): "))
 m_c = float(input("Enter the mass flow rate of the cold fluid (kg/s): "))
-U = float(input("Enter the overall heat transfer coefficient (kW/m²°C): "))
+U_input = float(input("Enter the overall heat transfer coefficient (W/m²K): "))
 
+
+U= U_input/1000  #Converting W/m²K to kW/m²K
 
 #Calculating heat duties, LMTD, heat exchanger area, error percentage, capacity rates, capacity ratio, maximum possible heat transfer, and effectiveness
 Qh = heat_duty(Th_in, Th_out, Cp_h, m_h)
@@ -73,30 +75,97 @@ Qmax=min(Ch, Cc)*(Th_in-Tc_in)
 
 effectiveness = abs(Qc)/Qmax
 
+NTU = U * area / min(Ch, Cc)
 
-#printing the results of the heat exchanger design and performance analysis
-print("\n\n\nHeat Exchanger Design and Performance Analysis Results:")
-print(f"Heat duty of hot fluid: {Qh:.2f} kW")
-print(f"Heat duty of cold fluid: {Qc:.2f} kW")
-print(f"Required heat exchanger area: {area:.2f} m²")
-print(f"Percentage error between hot and cold fluid heat duties: {error:.2f}%")
-print(f"Heat capacity rate of hot fluid: {Ch:.2f} kW/°C")
-print(f"Heat capacity rate of cold fluid: {Cc:.2f} kW/°C")
-print(f"Cmin: {min(Ch, Cc):.2f} kW/°C")
-print(f"Capacity ratio (Cmin/Cmax): {Cr:.2f}")
-print(f"Maximum possible heat transfer (Qmax): {Qmax:.2f} kW")
-print(f"Effectiveness of the heat exchanger: {effectiveness:.2f}")
 
 
 
 #analyzing the effectiveness of the heat exchanger and providing recommendations based on its value
 if effectiveness < 0.5:
     print("The heat exchanger is not very effective. Consider redesigning or optimizing the system.")
-elif effectiveness==1:
+elif math.isclose(effectiveness, 1):
     print("The heat exchanger is ideal.")
+elif effectiveness > 0.5 and effectiveness < 1:
+    print("The heat exchanger is moderately effective. There may be room for improvement.")
 elif effectiveness > 1:
     print("Warning: Effectiveness exceeds 1. Check inputs.")
-print("Area that can be used for heat transfer: {:.2f} m²".format(area))
+print("Area that can be used for heat transfer: {:.4f} m²".format(area))
+
+
+
+### Displaying input parameters and results in a formatted manner
+plt.figure(figsize=(12,7))
+plt.axis('off')
+
+# Left side - Input Parameters
+inputs = f"""
+INPUT PARAMETERS
+
+Hot Fluid
+------------
+Inlet Temperature : {Th_in:.4f} K
+Outlet Temperature: {Th_out:.4f} K
+Cp               : {Cp_h:.4f} kJ/kgK
+Mass Flow Rate   : {m_h:.4f} kg/s
+
+Cold Fluid
+------------
+Inlet Temperature : {Tc_in:.4f} K
+Outlet Temperature: {Tc_out:.4f} K
+Cp               : {Cp_c:.4f} kJ/kgK
+Mass Flow Rate   : {m_c:.4f} kg/s
+
+Overall U
+------------
+{U_input:.4f} W/m²K
+"""
+
+# Right side - Results
+results = f"""
+CALCULATED RESULTS
+
+Heat Duty (Hot)      : {Qh:.4f} kW
+Heat Duty (Cold)     : {Qc:.4f} kW
+
+LMTD                 : {delta_Tlm:.4f} K
+NTU                  : {NTU:.4f}
+Required Area        : {area:.4f} m²
+
+Percentage Error     : {error:.4f} %
+
+Capacity Rate (Hot)  : {Ch:.4f} kW/K
+Capacity Rate (Cold) : {Cc:.4f} kW/K
+
+Cmin                 : {min(Ch,Cc):.4f} kW/K
+Capacity Ratio (Cr)  : {Cr:.4f}
+
+Qmax                 : {Qmax:.4f} kW
+Effectiveness        : {effectiveness:.4f}
+"""
+
+# Left column
+plt.text(
+    0.05, 0.95,
+    inputs,
+    fontsize=11,
+    family='monospace',
+    verticalalignment='top',
+    bbox=dict(facecolor='lightyellow', edgecolor='black')
+)
+
+# Right column
+plt.text(
+    0.55, 0.95,
+    results,
+    fontsize=11,
+    family='monospace',
+    verticalalignment='top',
+    bbox=dict(facecolor='lightcyan', edgecolor='black')
+)
+
+plt.title("--------------------------------------------------------------\nHEAT EXCHANGER DESIGN AND PERFORMANCE REPORT\n--------------------------------------------------------------", fontsize=14)
+plt.show()
+
 
 
 
@@ -105,12 +174,14 @@ print("Area that can be used for heat transfer: {:.2f} m²".format(area))
 ## A v/s U plot
 U_values =[]
 A_values =[]
-for U in range(100, 2100, 100):
-    U_values.append(U)
-    A_values.append(heat_exchanger_area(abs(Qh), U, delta_Tlm))
+
+for U_W in range(100, 2100, 100):
+    U_values.append(U_W)
+    U_kW = U_W / 1000
+    A_values.append(heat_exchanger_area(abs(Qh), U_kW, delta_Tlm))
 
 plt.plot(U_values, A_values, marker='o', color='orange')
-plt.xlabel('Overall Heat Transfer Coefficient (kW/m²°C)')
+plt.xlabel("Overall Heat Transfer Coefficient (W/m²K)")
 plt.ylabel('Required Heat Exchanger Area (m²)')
 plt.title('Heat Exchanger Design Analysis')
 plt.grid(True)
@@ -119,9 +190,9 @@ plt.show()
 ## A v/s heat fluid flow rate plot
 m_h_values =[]
 A_values_mh =[]
-for m_h in range(1, 21):
-    m_h_values.append(m_h)
-    Qh_temp = heat_duty(Th_in, Th_out, Cp_h, m_h)
+for mh in range(1, 21):
+    m_h_values.append(mh)
+    Qh_temp = heat_duty(Th_in, Th_out, Cp_h, mh)
     A_values_mh.append(heat_exchanger_area(abs(Qh_temp), U, delta_Tlm))
 
 plt.plot(m_h_values, A_values_mh, marker='o', color='red')
@@ -134,9 +205,9 @@ plt.show()
 ## A v/s cold fluid flow rate plot
 m_c_values =[]
 A_values_mc =[]
-for m_c in range(1, 21):
-    m_c_values.append(m_c)
-    Qc_temp = heat_duty(Tc_in, Tc_out, Cp_c, m_c)
+for mc in range(1, 21):
+    m_c_values.append(mc)
+    Qc_temp = heat_duty(Tc_in, Tc_out, Cp_c, mc)
     A_values_mc.append(heat_exchanger_area(abs(Qc_temp), U, delta_Tlm))
 
 
@@ -151,15 +222,19 @@ plt.show()
 ## effectiveness v/s U
 U_values_eff =[]
 effectiveness_values =[]
-for U in range(100, 2100, 100):
-    U_values_eff.append(U)
-    A_temp = heat_exchanger_area(abs(Qh), U, delta_Tlm)
-    NTU = U * A_temp / min(Ch, Cc)
-    effectiveness_temp = (1- math.exp((-NTU)*(1+Cr)))/(1+Cr)
-    effectiveness_values.append(effectiveness_temp)
+fixed_area = area
+
+for U_W in range(100,2100,100):
+    U_values_eff.append(U_W)
+
+    U_kW = U_W / 1000
+
+    NTU = U_kW * fixed_area / min(Ch,Cc)
+
+    effectiveness_values.append(effectiveness_counterflow(NTU, Cr))
 
 plt.plot(U_values_eff, effectiveness_values, marker='o', color='purple')
-plt.xlabel('Overall Heat Transfer Coefficient (kW/m²°C)')
+plt.xlabel('Overall Heat Transfer Coefficient (W/m²K)')
 plt.ylabel('Effectiveness')
 plt.title('Effectiveness vs Overall Heat Transfer Coefficient')
 plt.grid(True)
@@ -169,9 +244,9 @@ plt.show()
 effectiveness_parallel = []
 effectiveness_counter = []
 NTU_values = list(range(1, 21))
-for NTU in range(1, 21):
-    effectiveness_parallel.append((1 - math.exp(-NTU * (1 + Cr))) / (1 + Cr))
-    effectiveness_counter.append(effectiveness_counterflow(NTU, Cr))
+for NTU_temp in range(1, 21):
+    effectiveness_parallel.append((1 - math.exp(-NTU_temp * (1 + Cr))) / (1 + Cr))
+    effectiveness_counter.append(effectiveness_counterflow(NTU_temp, Cr))
 plt.plot(NTU_values, effectiveness_parallel, label='Parallel Flow')
 plt.plot(NTU_values, effectiveness_counter, label='Counter Flow')
 plt.xlabel('NTU')
