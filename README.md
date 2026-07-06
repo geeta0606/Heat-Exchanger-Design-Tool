@@ -47,9 +47,16 @@ Heat-Exchanger-Design-Tool/
   <img src="plots/Eff_vs_NTU.png" width="45%">
 </p>
 
+## Verifying with DWSIM
+<p align="center">
+  <img src="DWSIM_Validation/Heat_Exchanger.png" width="45%">
+  <img src="DWSIM_Validation/Input_and_output.png" width="45%">
+</p>
+
 
 
 ## Technologies Used
 - **Python 3**
 - **Matplotlib**
 - **Math module**
+- **DWSIM**
