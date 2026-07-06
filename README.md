@@ -52,7 +52,7 @@ Heat-Exchanger-Design-Tool/
 The Python-based heat exchanger design tool was validated against DWSIM using identical operating conditions. The calculated heat duty, heat exchanger area, effectiveness, LMTD, and maximum heat transfer showed excellent agreement with DWSIM, with deviations below 0.05% for all reported parameters. This validates the correctness of the implemented LMTD and effectiveness–NTU methods.
 
 <p align="center">
-  <img src="DWSIM_Validation/Heat_Exchanger.png" width="45%">
+  <img src="DWSIM_Validation/Comparision_table.png" width="45%">
 </p>
 
 
