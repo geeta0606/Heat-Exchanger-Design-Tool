@@ -24,7 +24,7 @@ A Python-based tool developed to perform thermal analysis of a double-pipe heat 
 - Energy Balance
 
 ## Project Structure
-## Repository Structure
+# Repository Structure
 
 ```text
 Heat-Exchanger-Design-Tool/
@@ -41,16 +41,18 @@ Heat-Exchanger-Design-Tool/
     └── parallel_counter_vs_NTU.png
 ```
 
-## Example plots
+# Example plots
 <p align="center">
   <img src="plots/Eff_vs_U.png" width="45%">
   <img src="plots/Eff_vs_NTU.png" width="45%">
 </p>
 
-## Verifying with DWSIM
+# Verifying with DWSIM
+
+The Python-based heat exchanger calculations were validated using DWSIM under identical operating conditions. The results showed close agreement in heat duty, outlet temperatures, and heat exchanger performance.
+
 <p align="center">
   <img src="DWSIM_Validation/Heat_Exchanger.png" width="45%">
-  <img src="DWSIM_Validation/Input_and_output.png" width="45%">
 </p>
 
 
