@@ -43,8 +43,8 @@ Heat-Exchanger-Design-Tool/
 
 ## Example plots
 <p align="center">
-  <img src="plots/Area_vs_U.png" width="45%">
-  <img src="plots/parallel_counter_vs_NTU.png" width="45%">
+  <img src="plots/Eff_vs_U.png" width="45%">
+  <img src="plots/Eff_vs_NTU.png" width="45%">
 </p>
 
 
