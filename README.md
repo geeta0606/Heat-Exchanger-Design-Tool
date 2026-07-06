@@ -24,7 +24,7 @@ A Python-based tool developed to perform thermal analysis of a double-pipe heat 
 - Energy Balance
 
 ## Project Structure
-# Repository Structure
+### Repository Structure
 
 ```text
 Heat-Exchanger-Design-Tool/
@@ -41,13 +41,13 @@ Heat-Exchanger-Design-Tool/
     └── parallel_counter_vs_NTU.png
 ```
 
-# Example plots
+### Example plots
 <p align="center">
   <img src="plots/Eff_vs_U.png" width="45%">
   <img src="plots/Eff_vs_NTU.png" width="45%">
 </p>
 
-# Verifying with DWSIM
+### Verifying with DWSIM
 
 The Python-based heat exchanger design tool was validated against DWSIM using identical operating conditions. The calculated heat duty, heat exchanger area, effectiveness, LMTD, and maximum heat transfer showed excellent agreement with DWSIM, with deviations below 0.05% for all reported parameters. This validates the correctness of the implemented LMTD and effectiveness–NTU methods.
 
